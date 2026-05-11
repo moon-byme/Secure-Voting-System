@@ -1,97 +1,53 @@
-# secure-voting-system
+# Minha contribuição para o Sistema de Votação Seguro
 
-Este projeto é um sistema de votação desenvolvido na linguagem **Java**, visando criar eleições com garantia de segurança, integridade e sigilo dos votos pela aplicação técnicas de criptografia avançadas.
+Este repositório é um **fork** do projeto desenvolvido em equipe, onde atuei como desenvolvedora Backend. O objetivo principal foi criar um sistema de eleições com garantia de segurança, integridade e sigilo dos votos utilizando Java e Spring Boot.
 
+## 🎯 Meu Foco e Responsabilidades
+Neste projeto, minha atuação foi concentrada no **Backend e infraestrutura Spring Boot**, com destaque para:
+* **Cadastro e Autenticação de Usuários:** Implementação de fluxos para eleitores e administradores.
+* **Segurança e Criptografia:** Integração do **BCrypt** para proteção de credenciais e hash de senhas.
+* **Gestão de Votações:** Desenvolvimento da lógica para criação, gerenciamento e registro de votos.
+* **Arquitetura:** Estruturação inicial do projeto e integração de dependências via Maven.
 
-## Objetivos
+---
 
-- Votação segura e simples
-- Proteção criptográfica completa dos votos e senha dos usuários
-- Simulação de urna eletrônica com funcionalidades parecidas
-- Auditabilidade e transparência no processo eleitoral
+## 📑 Sobre o Projeto Geral
 
+Este sistema visa simular uma urna eletrônica com foco total em segurança avançada.
 
-## Tecnologias
+### Objetivos
+* Votação segura e simples.
+* Proteção criptográfica completa (votos e senhas).
+* Simulação de urna eletrônica auditável e transparente.
 
+### 🛠️ Tecnologias e Ferramentas
 
-### **Backend & Core**
-| Tecnologia | Versão | Propósito                                       |
-|------------|-------|-------------------------------------------------|
-| **Java** | 21 | Linguagem principal                             |
-| **Spring Boot** | 3.x | Backend e injeção de dependência                |
-| **Lombok** | Latest | Redução de boilerplate (código repetitivo) code |
+| Categoria | Tecnologia | Versão | Propósito |
+| :--- | :--- | :--- | :--- |
+| **Linguagem** | Java | 21 | Linguagem principal |
+| **Framework** | Spring Boot | 3.x | Backend e Injeção de Dependência |
+| **Interface** | JavaFX | 21.0.2 | Interface Desktop nativa |
+| **Banco de Dados** | MySQL | - | Persistência de dados |
+| **Segurança** | BCrypt / AES-256 | - | Criptografia e Integridade |
+| **Utilitários** | Lombok / Maven | - | Produtividade e Gestão |
 
-### **Banco de Dados**
-| Tecnologia | Propósito |
-|------------|-----------|
-| **MySQL** | Armazenamento de dados |
+### 🔒 Estratégia de Segurança
+1. **Confidencialidade (AES-256):** Protege o sigilo dos resultados parciais diretamente no banco de dados.
+2. **Integridade (HMAC-SHA256):** Garante que o registro do voto não foi modificado através de um selo único.
+3. **Autenticação (BCrypt):** Protege as credenciais de acesso contra vazamentos.
 
-### **Interface Gráfica**
-| Tecnologia        | Versão | Propósito                    |
-|-------------------|--------|------------------------------|
-| **JavaFX**        | 21.0.2 | Interface desktop nativa     |
-| **JPA/Hibernate** | Latest | ORM (Object-Relational Mapping) |
+### 🚀 Como Executar
+1. Certifique-se de usar o **JDK 21 LTS**.
+2. Gere as chaves utilizando a classe `KeyGenerator` no pacote `Util`.
+3. Configure as chaves e o banco de dados no arquivo `application.properties`.
+4. Para detalhes de banco e interface, consulte o arquivo `SETUP.MD`.
+5. Execute a classe `ExecutorSistemaVotacaoApplication`.
 
-### **Segurança & Criptografia**
+---
 
-| Algoritmo/Biblioteca | Aplicação |
-| :------------------- | :--------------------------------- |
-| **AES-256 (GCM)** | Criptografia da Contagem de Votos |
-| **HMAC-SHA256** | Integridade do Registro de Voto |
-| **BCrypt** | Hash de Senhas |
-
-### **Ferramentas de Desenvolvimento**
-| Ferramenta | Propósito |
-|------------|-----------|
-| **Maven** | Gerenciamento de dependências |
-| **Git** | Controle de versão |
-| **JUnit 5** | Testes unitários |
-
-
-
-## Funcionalidades previstas
-
-- Cadastro de candidatos
-- Identificação do eleitor/admin
-- Registro, armazenamento seguro de senhas e criptografia dos votos
-- Apuração automática com verificação de integridade
-
-
-## Estratégia de Segurança
-
-### Camadas de Proteção:
-
-1.  **Confidencialidade da Apuração (AES-256):** Protege o sigilo dos resultados parciais, criptografando a contagem de votos de cada candidato/opção diretamente no banco de dados.
-2.  **Integridade e Autenticidade do Voto (HMAC-SHA256):** Garante que cada registro de voto é autêntico e não foi modificado, através de um selo criptográfico único.
-3.  **Hash Seguro de Senhas (BCrypt):** Protege as credenciais de acesso dos usuários contra acesso não autorizado.
-
-
-### Fluxo de Votação Segura:
-**Eleitor → Autenticação → Registro do Voto com Selo HMAC → Atualização Criptografada da Contagem → Banco de Dados**
-
-
-1.  **Autenticação:** O usuário (eleitor/admin) insere suas credenciais. A senha fornecida é transformada em um hash com **BCrypt** e comparada com o hash seguro armazenado no banco de dados para validar o acesso.
-2.  **Registro do Voto:** Ao registrar um voto, o sistema cria um registro (`VotoModel`) contendo os detalhes da votação. Imediatamente, ele gera um "selo" de integridade para esse registro usando **HMAC-SHA256**. Esse selo é um hash que combina os dados do voto (IDs de usuário, votação, opção e o timestamp) com uma chave secreta do servidor.
-3.  **Armazenamento do Voto:** O registro do voto, junto com seu selo HMAC, é salvo na tabela `tb_voto`. O selo permite verificar posteriormente se algum dado daquele registro foi alterado.
-4.  **Atualização da Contagem:** Simultaneamente, o sistema incrementa a contagem de votos da `OpcaoVoto` escolhida. Antes de salvar essa nova contagem no banco de dados, o valor é criptografado usando **AES-256**. Isso impede que alguém com acesso ao banco de dados possa ver a contagem de votos em tempo real ou alterá-la facilmente.
-
-
-## Passo-a-Passo para execução
-
-0. Carregar o projeto para a IDE
-1. Gerar chaves usando a classe `KeyGenerator` presente no package `Util`
-2. Copiar chaves para seus respectivos campos em `application.properties`
-2. Configurar o MySQL (veja em [SETUP.MD](SETUP.md))
-3. Configurar JavaFX (veja em [SETUP.MD](SETUP.md))
-4. Executar classe `SistemaVotacaoApplication`
-
-- Obs: ⚠️ [JDK 21 LTS](https://www.oracle.com/br/java/technologies/downloads/#java21) é necessário. 
-Qualquer substituição por outra versão pode gerar erro fatal de execução
-- Obs: Para configurações de segurança, veja [SETUP.MD](SETUP.md)
-
-## Autores:
-
-- [@georiSamuel](https://github.com/georiSamuel)
-- [@Horlanlacerda](https://github.com/Horlanlacerda)
-- [@lethy-while](https://github.com/lethy-while) / [@moon-byme](https://github.com/moon-byme)
-- [@SuelleMaciel](https://github.com/SuelleMaciel)
+### 👥 Autores e Colaboradores
+Projeto desenvolvido em equipe por:
+* [@georiSamuel](https://github.com/georiSamuel) (Lead/Original)
+* [@Horlanlacerda](https://github.com/Horlanlacerda)
+* [@moon-byme](https://github.com/moon-byme) (Backend & Security)
+* [@SuelleMaciel](https://github.com/SuelleMaciel)
